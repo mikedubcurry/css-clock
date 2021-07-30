@@ -21,27 +21,28 @@
             }
 
             :root {
+                --clock-size: 90vw;
                 --offset-hour: 0turn;
                 --offset-minute: 0turn;
                 --offset-second: 0turn;
             }
 
             .clock {
-                width: 500px;
-                height: 500px;
+                width: var(--clock-size);
+                height: var(--clock-size);
                 border-radius: 50%;
                 background-color: azure;
-                border: 15px solid #444;
+                border: calc(var(--clock-size)*.03) solid #444;
                 position: relative;
             }
 
             .clock::after {
                 position: absolute;
                 content: "";
-                left: calc(50% - 8px);
-                top: calc(50% - 8px);
-                width: 16px;
-                height: 16px;
+                left: calc(50% - (var(--clock-size) / 40));
+                top: calc(50% - (var(--clock-size) / 40));
+                width: calc(var(--clock-size) / 20);
+                height: calc(var(--clock-size) / 20);
                 border-radius: 50%;
                 background-color: black;
             }
@@ -58,7 +59,7 @@
                 position: absolute;
                 width: 100%;
                 text-align: center;
-                top: 23px;
+                top: 5%;
                 left: 0;
             }
 
@@ -66,15 +67,15 @@
                 position: absolute;
                 width: 100%;
                 left: 0;
-                top: 427px;
+                top: 89%;
                 text-align: center;
             }
 
             .three {
                 width: 100%;
                 position: absolute;
-                left: -20px;
-                top: 220px;
+                left: -5%;
+                top: 48%;
                 text-align: right;
             }
 
@@ -82,25 +83,25 @@
                 width: 100%;
                 position: absolute;
                 left: 20px;
-                top: 220px;
+                top: 47%;
                 text-align: left;
             }
 
             svg {
-                width: 500px;
-                height: 500px;
+                width: var(--clock-size);
+                height: var(--clock-size);
                 fill: none;
             }
 
             circle.ticks {
-                stroke-width: 11px;
+                stroke-width: calc(var(--clock-size) *.022);
                 stroke-dasharray: 0.25 0.75;
                 stroke-dashoffset: 0.125;
                 stroke: slategray;
             }
 
             circle.ticks-by-five {
-                stroke-width: 18px;
+                stroke-width: calc(var(--clock-size) * .036);
                 stroke-dasharray: 0.25 4.75;
                 stroke-dashoffset: 0.125;
                 stroke: black;
@@ -108,11 +109,11 @@
 
             .hour {
                 width: 5px;
-                height: 120px;
+                height: calc((var(--clock-size) / 2) * .5);
                 background-color: #708090;
                 position: absolute;
-                left: 232px;
-                bottom: 235px;
+                left: calc(var(--clock-size)*.464);
+                bottom: calc(var(--clock-size)*.47);
                 transform: rotate(var(--offset-hour));
                 transform-origin: 50% bottom;
                 animation: tickHour infinite 43200s linear;
@@ -121,11 +122,11 @@
 
             .minute {
                 width: 8px;
-                height: 215px;
+                height: calc((var(--clock-size) / 2) * .75);
                 background-color: #405060;
                 position: absolute;
-                left: 231px;
-                bottom: 235px;
+                left: calc(var(--clock-size)*.462);
+                bottom: calc(var(--clock-size)*.47);
                 transform: rotate(var(--offset-minute));
                 transform-origin: 50% bottom;
                 animation: tickMinute infinite 3600s linear;
@@ -135,11 +136,13 @@
 
             .second {
                 width: 3px;
-                height: 215px;
+                height: calc((var(--clock-size) / 2) * .8);
+                /* height: 215px; */
                 background-color: black;
+
                 position: absolute;
-                left: 233px;
-                bottom: 235px;
+                left: calc(var(--clock-size)*.466);
+                bottom: calc(var(--clock-size)*.47);
                 transform-origin: 50% bottom;
                 transform: rotate(var(--offset-second));
                 animation: tickSecond infinite 60s steps(60, end) .2s;
@@ -163,6 +166,12 @@
                     transform: rotate(calc(var(--offset-hour) + 1turn));
                 }
             }
+
+            @media screen and (min-width: 500px) {
+                :root {
+                    --clock-size: 500px;
+                }
+            }
         </style>
         <title>Clock</title>
     </head>
@@ -172,7 +181,7 @@
             <div class="hour"></div>
             <div class="minute"></div>
             <div class="second"></div>
-            <svg class="ticks">
+            <svg>
                 <circle class="ticks" pathLength="60" cx='235px' cy='235px' r="230px" />
                 <circle class="ticks-by-five" pathLength="60" cx='235px' cy='235px' r="227px" />
             </svg>
@@ -182,6 +191,15 @@
             <div class="nine">9</div>
         </div>
         <script>
+            const screenWidth = window.innerWidth;
+            if (screenWidth < 500) {
+                document.querySelector('.ticks-by-five').setAttribute('cx', (screenWidth / 2 * .9) * .94)
+                document.querySelector('.ticks-by-five').setAttribute('cy', (screenWidth / 2 * .9) * .94)
+                document.querySelector('.ticks-by-five').setAttribute('r', (screenWidth / 2 * .9) * .91)
+                document.querySelector('.ticks').setAttribute('cx', (screenWidth / 2 * .9) * .94)
+                document.querySelector('.ticks').setAttribute('cy', (screenWidth / 2 * .9) * .94)
+                document.querySelector('.ticks').setAttribute('r', (screenWidth / 2 * .9) * .925)
+            }
             const now = new Date();
             const clock = document.querySelector('.clock')
             const hour = document.querySelector('.hour')

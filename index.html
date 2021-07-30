@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+
+    <head>
+        <meta charset="UTF-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <style>
+            * {
+                margin: 0;
+                padding: 0;
+                box-sizing: border-box;
+            }
+
+            body {
+                background-color: slateblue;
+                height: 100vh;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+            }
+
+            :root {
+                --offset-hour: 0turn;
+                --offset-minute: 0turn;
+                --offset-second: 0turn;
+            }
+
+            .clock {
+                width: 500px;
+                height: 500px;
+                border-radius: 50%;
+                background-color: azure;
+                border: 15px solid #444;
+                position: relative;
+            }
+
+            .clock::after {
+                position: absolute;
+                content: "";
+                left: calc(50% - 8px);
+                top: calc(50% - 8px);
+                width: 16px;
+                height: 16px;
+                border-radius: 50%;
+                background-color: black;
+            }
+
+            .twelve,
+            .six,
+            .three,
+            .nine {
+                font-size: 24px;
+                font-weight: bold;
+            }
+
+            .twelve {
+                position: absolute;
+                width: 100%;
+                text-align: center;
+                top: 23px;
+                left: 0;
+            }
+
+            .six {
+                position: absolute;
+                width: 100%;
+                left: 0;
+                top: 427px;
+                text-align: center;
+            }
+
+            .three {
+                width: 100%;
+                position: absolute;
+                left: -20px;
+                top: 220px;
+                text-align: right;
+            }
+
+            .nine {
+                width: 100%;
+                position: absolute;
+                left: 20px;
+                top: 220px;
+                text-align: left;
+            }
+
+            svg {
+                width: 500px;
+                height: 500px;
+                fill: none;
+            }
+
+            circle.ticks {
+                stroke-width: 11px;
+                stroke-dasharray: 0.25 0.75;
+                stroke-dashoffset: 0.125;
+                stroke: slategray;
+            }
+
+            circle.ticks-by-five {
+                stroke-width: 18px;
+                stroke-dasharray: 0.25 4.75;
+                stroke-dashoffset: 0.125;
+                stroke: black;
+            }
+
+            .hour {
+                width: 5px;
+                height: 120px;
+                background-color: #708090;
+                position: absolute;
+                left: 232px;
+                bottom: 235px;
+                transform: rotate(var(--offset-hour));
+                transform-origin: 50% bottom;
+                animation: tickHour infinite 43200s linear;
+                clip-path: polygon(100% 100%, 0% 100%, 0% 50%, 50% 0, 100% 50%);
+            }
+
+            .minute {
+                width: 8px;
+                height: 215px;
+                background-color: #405060;
+                position: absolute;
+                left: 231px;
+                bottom: 235px;
+                transform: rotate(var(--offset-minute));
+                transform-origin: 50% bottom;
+                animation: tickMinute infinite 3600s linear;
+                clip-path: polygon(100% 100%, 0% 100%, 0% 50%, 50% 0, 100% 50%);
+
+            }
+
+            .second {
+                width: 3px;
+                height: 215px;
+                background-color: black;
+                position: absolute;
+                left: 233px;
+                bottom: 235px;
+                transform-origin: 50% bottom;
+                transform: rotate(var(--offset-second));
+                animation: tickSecond infinite 60s steps(60, end) .2s;
+                clip-path: polygon(100% 100%, 0% 100%, 0% 50%, 50% 0, 100% 50%);
+            }
+
+            @keyframes tickSecond {
+                to {
+                    transform: rotate(calc(var(--offset-second) + 1turn));
+                }
+            }
+
+            @keyframes tickMinute {
+                to {
+                    transform: rotate(calc(var(--offset-minute) + 1turn));
+                }
+            }
+
+            @keyframes tickHour {
+                to {
+                    transform: rotate(calc(var(--offset-hour) + 1turn));
+                }
+            }
+        </style>
+        <title>Clock</title>
+    </head>
+
+    <body>
+        <div class="clock">
+            <div class="hour"></div>
+            <div class="minute"></div>
+            <div class="second"></div>
+            <svg class="ticks">
+                <circle class="ticks" pathLength="60" cx='235px' cy='235px' r="230px" />
+                <circle class="ticks-by-five" pathLength="60" cx='235px' cy='235px' r="227px" />
+            </svg>
+            <div class="twelve">12</div>
+            <div class="three">3</div>
+            <div class="six">6</div>
+            <div class="nine">9</div>
+        </div>
+        <script>
+            const now = new Date();
+            const clock = document.querySelector('.clock')
+            const hour = document.querySelector('.hour')
+            const minute = document.querySelector('.minute')
+            const second = document.querySelector('.second')
+
+            const s = now.getSeconds()
+            const m = now.getMinutes()
+            const h = now.getHours()
+            document.documentElement.style.setProperty('--offset-second', `${s / 60}turn`)
+            document.documentElement.style.setProperty('--offset-minute', `${(m / 60) + (s / 3600)}turn`)
+            document.documentElement.style.setProperty('--offset-hour', `${((h % 12) / 12) + (m / 720)}turn`)
+
+            let t = setInterval(() => {
+                let time = new Date();
+                document.title = `${time.getHours() % 12 < 10 ? '0' + time.getHours() % 12 : time.getHours() % 12}:${time.getMinutes() < 10 ? '0' + time.getMinutes() : time.getMinutes()}:${time.getSeconds() < 10 ? '0' + time.getSeconds() : time.getSeconds()}`
+            }, 1000)
+        </script>
+    </body>
+
+</html>
